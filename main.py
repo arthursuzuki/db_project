@@ -40,12 +40,17 @@ def db_insert_aluno(nome, email, ano_escolar):
     mydb.commit()
     st.success("Record Created Successfully!!!")
 
-def db_select_aluno_prof(table):
+def db_select_prof(table):
     sql = f"SELECT Usuario.id, Usuario.email, Usuario.nome FROM USUARIO INNER JOIN {table} ON Usuario.id = {table}.id"
     cursor.execute(sql)
     result = cursor.fetchall()
     return result
 
+def db_select_aluno(table):
+    sql = f"SELECT Usuario.id, Usuario.email, Usuario.nome, {table}.ano_escolar FROM USUARIO INNER JOIN {table} ON Usuario.id = {table}.id"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
 
 def db_select(table):
     sql = f"select * from {table}"
@@ -63,8 +68,10 @@ def main():
     if option == "Visualizar":
         st.subheader("Visualizar dados de uma tabela")
         
-        if table == "Aluno" or table == 'Professor':
-            result = db_select_aluno_prof(table)
+        if table == 'Professor':
+            result = db_select_prof(table)
+        elif table == "Aluno":
+            result = db_select_aluno(table)
         else:   
             result = db_select(table)
 
