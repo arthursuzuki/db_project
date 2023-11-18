@@ -15,6 +15,21 @@ mydb = mysql.connector.connect(
 cursor = mydb.cursor()
 print("conexão efetivada com sucesso")
 
+
+def db_select_aluno_prof(table):
+    sql = f"SELECT Usuario.id, Usuario.email, Usuario.nome FROM USUARIO INNER JOIN {table} ON Usuario.id = {table}.id"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+
+
+def db_select(table):
+    sql = f"select * from {table}"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+
+
 def main():
     st.title("CRUD operações bd da rede social")
     option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', ))
@@ -23,9 +38,10 @@ def main():
     if option == "Visualizar":
         st.subheader("Visualizar dados de uma tabela")
         
-        sql = f"select * from {table}"
-        cursor.execute(sql)
-        result = cursor.fetchall()
+        if table == "Aluno" or table == 'Professor':
+            result = db_select_aluno_prof(table)
+        else:   
+            result = db_select(table)
 
         st.write(f"Dados da Tabela {table}")
         for row in result:
