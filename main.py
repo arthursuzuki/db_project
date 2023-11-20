@@ -185,22 +185,19 @@ def main():
     option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', ))
     table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
 
-    if option == "Visualizar":
+   if option == "Visualizar":
         st.subheader("Visualizar dados de uma tabela")
-        
         if table == 'Professor':
             result = db_select_prof(table)
-        
         elif table == "Aluno":
             result = db_select_aluno(table)
-        
-        else:   
+        else:
             result = db_select(table)
 
         st.write(f"Dados da Tabela {table}")
-        for row in result:
-            st.write(row)
-        # cursor = mydb.cursor()
+
+        # Exibindo a tabela no Streamlit
+        st.table(result)
 
     elif option == "Inserir":
         st.subheader("Inserir um dado a uma tabela")
