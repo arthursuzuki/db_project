@@ -185,7 +185,7 @@ def main():
     option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', ))
     table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
 
-   if option == "Visualizar":
+    if option == "Visualizar":
         st.subheader("Visualizar dados de uma tabela")
         if table == 'Professor':
             result = db_select_prof(table)
