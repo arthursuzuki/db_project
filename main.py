@@ -28,12 +28,12 @@ def db_insert_prof(nome, email):
     mydb.commit()
     st.success("Record Created Successfully!!!")
 
-def db_insert_aluno(nome, email, ano_escolar):
+def db_insert_aluno(nome, email, ano_escolar, id_escola):
     sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
     cursor.execute(sql)
     cursor.fetchall()
 
-    sql = f"INSERT INTO Aluno (id, ano_escolar) VALUES ((SELECT LAST_INSERT_ID()), {ano_escolar});"
+    sql = f"INSERT INTO Aluno (id, ano_escolar, fk_escola_id) VALUES ((SELECT LAST_INSERT_ID()), {ano_escolar}, {int(id_escola)});"
     cursor.execute(sql)
 
     mydb.commit()
@@ -158,7 +158,7 @@ def main():
     st.title("CRUD operações bd da rede social")
     option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', 'Relatorio' ))
     if option == "Relatorio":
-        option_relatorio = st.sidebar.selectbox('Selecione uma operação', ('QTD Alunos por Olimpiada', 'QTD Alunos por tipo de escola', 'Relatorio 3' ))
+        option_relatorio = st.sidebar.selectbox('Selecione uma operação', ('QTD Alunos por Olimpiada', 'QTD Alunos por tipo de escola', "QTD Alunos em Cada Grupo" ))
     else: 
         table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
 
@@ -193,6 +193,14 @@ def main():
             result = pd.read_sql(sql, mydb)
             st.table(result)
 
+        elif option_relatorio == "QTD Alunos em Cada Grupo":
+            st.subheader("Quantidades de alunos em cada grupo")
+            sql = f"SELECT grupo.nome AS nome_grupo, COUNT(participa.fk_usuario_id) AS qtd_alunos FROM grupo LEFT JOIN participa ON grupo.id = participa.fk_grupo_id GROUP BY  grupo.nome ORDER BY qtd_alunos DESC;"
+            cursor.execute(sql)
+            cursor.fetchall()
+            result = pd.read_sql(sql, mydb)
+            st.table(result)
+
     elif option == "Inserir":
         st.subheader("Inserir um dado a uma tabela")
         if table == "Professor":
@@ -205,15 +213,16 @@ def main():
         elif table == "Aluno":
             nome = st.text_input("Nome do Aluno")
             email = st.text_input("Email do Aluno")
+            id_escola = st.number_input('Id da Escola', min_value= 1)
             ano_escolar = st.number_input("Ano Escolar", min_value= 1)
 
             if st.button("Inserir"):
-                db_insert_aluno(nome, email, ano_escolar)
+                db_insert_aluno(nome, email, ano_escolar, id_escola)
                 
         elif table == "Escola":
 
             nome = st.text_input("Nome da Escola")
-            tipo = st.text_input("Tipo de Escola")
+            tipo = st.text_input("Tipo de Escola (publica ou particular)")
             
             if st.button("Inserir"):
                 db_insert_escola(nome, tipo)
