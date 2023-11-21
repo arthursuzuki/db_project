@@ -439,7 +439,11 @@ def main():
                 cursor.execute(sql)
                 mydb.commit()
                 st.success("Atualizado com SUCESSO!")
+<<<<<<< HEAD
 
+=======
+## ate aqui ta tudo ok
+>>>>>>> 1ca837faa319d5fd33de2b94aaca9f67b6916266
 
         elif table == "Prof_Disciplina":
             fk_professor_id = st.number_input("Antigo Id do Professor", min_value=1)
@@ -604,7 +608,13 @@ def main():
                 cursor.execute(sql)
                 mydb.commit()
                 st.success("Deletado com SUCESSO!") 
+<<<<<<< HEAD
  
+=======
+
+######
+    
+>>>>>>> 1ca837faa319d5fd33de2b94aaca9f67b6916266
         elif table == "Leciona":
             fk_professor_id = st.number_input("Id do professor", min_value= 1)
             fk_escola_id = st.number_input("Id da escola", min_value= 1)
