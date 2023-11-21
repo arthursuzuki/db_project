@@ -107,13 +107,14 @@ Instale as dependências necessárias usando o pip:
 pip install streamlit mysql-connector-python
 ```
 
+Na linha 12 do codigo 'main.py' atribua a senha de seu localhost à variável password (substitua a palava <root>).
 
 ## Executando a Aplicação
 
 Depois de concluir a instalação, você pode iniciar a aplicação Streamlit. Certifique-se de estar no diretório do projeto e com o ambiente virtual ativado.
 
 ```bash
-streamlit run app.py
+streamlit run main.py
 ```
 
 Isso iniciará o servidor Streamlit e abrirá automaticamente a aplicação no seu navegador padrão. Caso contrário, você pode acessar a aplicação no navegador digitando o seguinte endereço na barra de URL:
