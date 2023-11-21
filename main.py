@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import mysql.connector
 
-
 #rodar com:  streamlit run "C:<path>\main.py"
 
 #conexão com o banco
@@ -16,150 +15,103 @@ mydb = mysql.connector.connect(
 cursor = mydb.cursor()
 print("conexão efetivada com sucesso")
 
-def db_insert_prof(nome, email):
-    sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
+def db_insert_usuario(email, nome):
+    sql = f"INSERT INTO Usuario (email, nome) VALUES ('{email}', '{nome}');"
     cursor.execute(sql)
-
-    cursor.fetchall()
-
-    sql = f"INSERT INTO Professor (id) VALUES (LAST_INSERT_ID());"
-    cursor.execute(sql)
-
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    return cursor.lastrowid  # Retorna o ID do usuário inserido
 
-def db_insert_aluno(nome, email, ano_escolar):
-    sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
+def db_insert_professor(fk_usuario_id):
+    sql = f"INSERT INTO Professor (id, fk_usuario_id) VALUES (NULL, {fk_usuario_id});"
     cursor.execute(sql)
-    cursor.fetchall()
-
-    sql = f"INSERT INTO Aluno (id, ano_escolar) VALUES ((SELECT LAST_INSERT_ID()), {ano_escolar});"
-    cursor.execute(sql)
-
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    return cursor.lastrowid  # Retorna o ID do professor inserido
+
+def db_insert_aluno(ano_escolar, fk_escola_id, fk_usuario_id):
+    sql = f"INSERT INTO Aluno (id, ano_escolar, fk_escola_id) VALUES ({fk_usuario_id}, {ano_escolar}, {fk_escola_id});"
+    cursor.execute(sql)
+    mydb.commit()
 
 def db_insert_grupo(nome, descricao, fk_professor_id):
-    sql_usuario = f"INSERT INTO Usuario (nome) VALUES ('{nome}');"
-    cursor.execute(sql_usuario)
-    cursor.execute("SELECT LAST_INSERT_ID();")
-    usuario_id = cursor.fetchone()[0]
-    sql_professor = f"INSERT INTO Professor (id, fk_usuario_id) VALUES (NULL, {usuario_id});"
-    cursor.execute(sql_professor)
-    cursor.execute("SELECT LAST_INSERT_ID();")
-    professor_id = cursor.fetchone()[0]
-    sql_grupo = f"INSERT INTO Grupo (nome, descricao, fk_professor_id) VALUES ('{nome}', '{descricao}', {professor_id});"
-    cursor.execute(sql_grupo)
+    # Assume que o nome do grupo é único (PRIMARY KEY auto_increment cuidará do ID)
+    sql = f"INSERT INTO Grupo (nome, descricao, fk_professor_id) VALUES ('{nome}', '{descricao}', {fk_professor_id});"
+    cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    return cursor.lastrowid  # Retorna o ID do grupo inserido
 
 def db_insert_escola(nome, tipo):
-    sql_usuario = f"INSERT INTO Usuario (nome) VALUES ('{nome}');"
-    cursor.execute(sql_usuario)
-    cursor.execute("SELECT LAST_INSERT_ID();")
-    usuario_id = cursor.fetchone()[0]
-    sql_escola = f"INSERT INTO Escola (nome, tipo) VALUES ('{nome}', '{tipo}');"
-    cursor.execute(sql_escola)
+    sql = f"INSERT INTO Escola (nome, tipo) VALUES ('{nome}', '{tipo}');"
+    cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Escola Record Created Successfully!!!")
 
 def db_insert_disciplina(nome):
-    sql_usuario = f"INSERT INTO Usuario (nome) VALUES ('{nome}');"
-    cursor.execute(sql_usuario)
-    cursor.execute("SELECT LAST_INSERT_ID();")
-    usuario_id = cursor.fetchone()[0]
-    sql_disciplina = f"INSERT INTO Disciplina (nome, fk_usuario_id) VALUES ('{nome}', {usuario_id});"
-    cursor.execute(sql_disciplina)
+    sql = f"INSERT INTO Disciplina (nome) VALUES ('{nome}');"
+    cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Disciplina Record Created Successfully!!!")
 
 def db_insert_olimpiada(nome, estado, cidade, rua, numero, edicao):
     sql = f"INSERT INTO Olimpiada (nome, estado, cidade, rua, numero, edicao) VALUES ('{nome}', '{estado}', '{cidade}', '{rua}', '{numero}', {edicao});"
     cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Olimpiada Record Created Successfully!!!")
 
 def db_insert_post(conteudo, data_post, fk_usuario_id):
-    sql_post = f"INSERT INTO Post (conteudo, data_post, fk_usuario_id) VALUES ('{conteudo}', '{data_post}', {fk_usuario_id});"
-    cursor.execute(sql_post)
+    sql = f"INSERT INTO Post (conteudo, data_post, fk_usuario_id) VALUES ('{conteudo}', '{data_post}', {fk_usuario_id});"
+    cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Post Record Created Successfully!!!")
 
-def db_insert_comentario(conteudo, data_comentario, fk_comentarios_id, fk_post_id, fk_usuario_id):
+def db_insert_comentarios(conteudo, data_comentario, fk_comentarios_id, fk_post_id, fk_usuario_id):
     sql = f"INSERT INTO Comentarios (conteudo, data_comentario, fk_comentarios_id, fk_post_id, fk_usuario_id) VALUES ('{conteudo}', '{data_comentario}', {fk_comentarios_id}, {fk_post_id}, {fk_usuario_id});"
     cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Comentarios Record Created Successfully!!!")
 
 def db_insert_grupo_disciplina(fk_grupo_id, fk_disciplina_id):
     sql = f"INSERT INTO grupo_disciplina (fk_grupo_id, fk_disciplina_id) VALUES ({fk_grupo_id}, {fk_disciplina_id});"
     cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Grupo Disciplina Record Created Successfully!!!")
+
+def db_insert_participa(fk_usuario_id, fk_grupo_id):
+    sql = f"INSERT INTO participa (fk_usuario_id, fk_grupo_id) VALUES ({fk_usuario_id}, {fk_grupo_id});"
+    cursor.execute(sql)
+    mydb.commit()
+    st.success("Participa Record Created Successfully!!!")
 
 def db_insert_prof_disciplina(fk_professor_id, fk_disciplina_id):
-    sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
-    cursor.execute(sql)
-    cursor.fetchall()
-    sql = f"INSERT INTO Professor (id) VALUES (LAST_INSERT_ID());"
-    cursor.execute(sql)
     sql = f"INSERT INTO prof_disciplina (fk_professor_id, fk_disciplina_id) VALUES ({fk_professor_id}, {fk_disciplina_id});"
     cursor.execute(sql)
     mydb.commit()
-    st.success("Record Created Successfully!!!")
-
+    st.success("Prof Disciplina Record Created Successfully!!!")
 
 def db_insert_leciona(fk_professor_id, fk_escola_id):
-    sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
-    cursor.execute(sql)
-    cursor.fetchall()
-
-    sql = f"INSERT INTO Professor (id) VALUES (LAST_INSERT_ID());"
-    cursor.execute(sql)
-
     sql = f"INSERT INTO leciona (fk_professor_id, fk_escola_id) VALUES ({fk_professor_id}, {fk_escola_id});"
     cursor.execute(sql)
-
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Leciona Record Created Successfully!!!")
 
 def db_insert_assiste(fk_aluno_id, fk_professor_id, fk_escola_id):
-    sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
-    cursor.execute(sql)
-    cursor.fetchall()
-
-    sql = f"INSERT INTO Aluno (id) VALUES (LAST_INSERT_ID());"
-    cursor.execute(sql)
-
     sql = f"INSERT INTO assiste (fk_aluno_id, fk_professor_id, fk_escola_id) VALUES ({fk_aluno_id}, {fk_professor_id}, {fk_escola_id});"
     cursor.execute(sql)
-
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Assiste Record Created Successfully!!!")
 
 def db_insert_concorre(fk_aluno_id, fk_olimpiada_id):
-    sql = f"INSERT INTO Usuario (nome, email) VALUES ('{nome}', '{email}');"
-    cursor.execute(sql)
-    cursor.fetchall()
-
-    sql = f"INSERT INTO Aluno (id) VALUES (LAST_INSERT_ID());"
-    cursor.execute(sql)
-
     sql = f"INSERT INTO concorre (fk_aluno_id, fk_olimpiada_id) VALUES ({fk_aluno_id}, {fk_olimpiada_id});"
     cursor.execute(sql)
-
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Concorre Record Created Successfully!!!")
 
 def db_insert_olimpiada_disciplina(fk_olimpiada_id, fk_disciplina_id):
-    sql = f"INSERT INTO Olimpiada (id) VALUES (LAST_INSERT_ID());"
-    cursor.execute(sql)
-
     sql = f"INSERT INTO olimpiada_disciplina (fk_olimpiada_id, fk_disciplina_id) VALUES ({fk_olimpiada_id}, {fk_disciplina_id});"
     cursor.execute(sql)
-
     mydb.commit()
-    st.success("Record Created Successfully!!!")
+    st.success("Olimpiada Disciplina Record Created Successfully!!!")
+
+
 
 def db_select_prof(table):
     sql = f"SELECT Usuario.id, Usuario.email, Usuario.nome FROM USUARIO INNER JOIN {table} ON Usuario.id = {table}.id"
@@ -187,11 +139,8 @@ def db_select(table):
 def main():
     
     st.title("CRUD operações bd da rede social")
-    option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', 'Relatorio' ))
-    if option == "Relatorio":
-        option_relatorio = st.sidebar.selectbox('Selecione uma operação', ('QTD Alunos por Olimpiada', 'QTD Alunos por tipo de escola', 'Relatorio 3' ))
-    else: 
-        table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
+    option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', ))
+    table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
 
     if option == "Visualizar":
         st.subheader("Visualizar dados de uma tabela")
@@ -206,23 +155,6 @@ def main():
 
         # Exibindo a tabela no Streamlit
         st.table(result)
-
-    elif option == "Relatorio":
-        if option_relatorio == "QTD Alunos por Olimpiada":
-            st.subheader("Quantidades de alunos concorrendo a cada olimpíada")
-            sql = f"SELECT olimpiada.id, olimpiada.nome, COUNT(concorre.fk_aluno_id) AS qtd_alunos FROM  olimpiada LEFT JOIN concorre ON olimpiada.id = concorre.fk_olimpiada_id GROUP BY olimpiada.id;"
-            cursor.execute(sql)
-            cursor.fetchall()
-            result = pd.read_sql(sql, mydb)
-            st.table(result)
-
-        elif option_relatorio == "QTD Alunos por tipo de escola":
-            st.subheader("Quantidades de alunos por tipo de escola")
-            sql = f"SELECT escola.tipo, COUNT(aluno.id) AS qtd_alunos FROM escola LEFT JOIN aluno ON escola.id = aluno.fk_escola_id GROUP BY escola.tipo;"
-            cursor.execute(sql)
-            cursor.fetchall()
-            result = pd.read_sql(sql, mydb)
-            st.table(result)
 
     elif option == "Inserir":
         st.subheader("Inserir um dado a uma tabela")
@@ -248,7 +180,17 @@ def main():
             tipo = st.text_input("Tipo de Escola")
             
             if st.button("Inserir"):
-                db_insert_escola(nome, tipo)
+                db_insert_escola(nome, tipo, fk_usuario_id)
+        
+        elif table == "Grupo":
+            st.subheader("Inserir um dado a uma tabela")
+            nome = st.text_input("Nome:")
+            descricao = st.text_area("Descrição:")
+            fk_professor_id = st.number_input("ID do Professor:")
+            
+            if st.button("Inserir"):
+                db_insert_grupo(nome, descricao, fk_professor_id)
+            
 
         elif table == "Disciplina":
             st.subheader("Inserir um dado a uma tabela")
@@ -287,19 +229,69 @@ def main():
             if st.button("Inserir"):
                 db_insert_comentario(conteudo_comentario, data_comentario, fk_comentarios_id, fk_post_id, fk_usuario_id_comentario)
 
-        elif table == "Grupo_Disciplina":
+        elif table == "grupo_disciplina":
             fk_grupo_id = st.number_input("ID do Grupo")
             fk_disciplina_id_grupo = st.number_input("ID da Disciplina")
 
             if st.button("Inserir"):
                 db_insert_grupo_disciplina(fk_grupo_id, fk_disciplina_id_grupo)
 
-        elif table == "Prof_Disciplina":
+        elif table == "prof_disciplina":
             fk_professor_id_disciplina = st.number_input("ID do Professor")
             fk_disciplina_id_professor = st.number_input("ID da Disciplina")
 
             if st.button("Inserir"):
                 db_insert_prof_disciplina(fk_professor_id_disciplina, fk_disciplina_id_professor)
+
+        elif table == "leciona":
+            fk_professor_id_leciona = st.number_input("ID do Professor")
+            fk_escola_id_leciona = st.number_input("ID da Escola")
+
+            if st.button("Inserir"):
+                db_insert_leciona(fk_professor_id_leciona, fk_escola_id_leciona)
+
+        elif table == "assiste":
+            fk_aluno_id_assiste = st.number_input("ID do Aluno")
+            fk_professor_id_assiste = st.number_input("ID do Professor")
+            fk_escola_id_assiste = st.number_input("ID da Escola")
+
+            if st.button("Inserir"):
+                db_insert_assiste(fk_aluno_id_assiste, fk_professor_id_assiste, fk_escola_id_assiste)
+
+        elif table == "concorre":
+            fk_aluno_id_concorre = st.number_input("ID do Aluno")
+            fk_olimpiada_id_concorre = st.number_input("ID da Olimpiada")
+
+            if st.button("Inserir"):
+                db_insert_concorre(fk_aluno_id_concorre, fk_olimpiada_id_concorre)
+
+        elif table == "olimpiada_disciplina":
+            fk_olimpiada_id_olimpiada_disciplina = st.number_input("ID da Olimpiada")
+            fk_disciplina_id_olimpiada_disciplina = st.number_input("ID da Disciplina")
+
+            if st.button("Inserir"):
+                db_insert_olimpiada_disciplina(fk_olimpiada_id_olimpiada_disciplina, fk_disciplina_id_olimpiada_disciplina)
+        
+        elif table == "Participa":
+            fk_usuario_id_participa = st.number_input("ID do Usuário")
+            fk_grupo_id_participa = st.number_input("ID do Grupo")
+
+            if st.button("Inserir"):
+                db_insert_participa(fk_usuario_id_participa, fk_grupo_id_participa)
+
+        elif table == "Grupo_disciplina":
+            fk_grupo_id_grupo_disciplina = st.number_input("ID do Grupo")
+            fk_disciplina_id_grupo_disciplina = st.number_input("ID da Disciplina")
+
+            if st.button("Inserir"):
+                db_insert_grupo_disciplina(fk_grupo_id_grupo_disciplina, fk_disciplina_id_grupo_disciplina)
+
+        elif table == "Prof_disciplina":
+            fk_professor_id_prof_disciplina = st.number_input("ID do Professor")
+            fk_disciplina_id_prof_disciplina = st.number_input("ID da Disciplina")
+
+            if st.button("Inserir"):
+                db_insert_prof_disciplina(fk_professor_id_prof_disciplina, fk_disciplina_id_prof_disciplina)
 
         elif table == "Leciona":
             fk_professor_id_leciona = st.number_input("ID do Professor")
@@ -318,18 +310,17 @@ def main():
 
         elif table == "Concorre":
             fk_aluno_id_concorre = st.number_input("ID do Aluno")
-            fk_olimpiada_id_concorre = st.number_input("ID da Olimpiada")
+            fk_olimpiada_id_concorre = st.number_input("ID da Olimpíada")
 
             if st.button("Inserir"):
                 db_insert_concorre(fk_aluno_id_concorre, fk_olimpiada_id_concorre)
 
-        elif table == "Olimpiada_Disciplina":
-            fk_olimpiada_id_olimpiada_disciplina = st.number_input("ID da Olimpiada")
+        elif table == "Olimpiada_disciplina":
+            fk_olimpiada_id_olimpiada_disciplina = st.number_input("ID da Olimpíada")
             fk_disciplina_id_olimpiada_disciplina = st.number_input("ID da Disciplina")
 
             if st.button("Inserir"):
                 db_insert_olimpiada_disciplina(fk_olimpiada_id_olimpiada_disciplina, fk_disciplina_id_olimpiada_disciplina)
-
 
 
     elif option == "Alterar":
