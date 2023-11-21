@@ -287,28 +287,28 @@ def main():
             if st.button("Inserir"):
                 db_insert_comentario(conteudo_comentario, data_comentario, fk_comentarios_id, fk_post_id, fk_usuario_id_comentario)
 
-        elif table == "grupo_disciplina":
+        elif table == "Grupo_Disciplina":
             fk_grupo_id = st.number_input("ID do Grupo")
             fk_disciplina_id_grupo = st.number_input("ID da Disciplina")
 
             if st.button("Inserir"):
                 db_insert_grupo_disciplina(fk_grupo_id, fk_disciplina_id_grupo)
 
-        elif table == "prof_disciplina":
+        elif table == "Prof_Disciplina":
             fk_professor_id_disciplina = st.number_input("ID do Professor")
             fk_disciplina_id_professor = st.number_input("ID da Disciplina")
 
             if st.button("Inserir"):
                 db_insert_prof_disciplina(fk_professor_id_disciplina, fk_disciplina_id_professor)
 
-        elif table == "leciona":
+        elif table == "Leciona":
             fk_professor_id_leciona = st.number_input("ID do Professor")
             fk_escola_id_leciona = st.number_input("ID da Escola")
 
             if st.button("Inserir"):
                 db_insert_leciona(fk_professor_id_leciona, fk_escola_id_leciona)
 
-        elif table == "assiste":
+        elif table == "Assiste":
             fk_aluno_id_assiste = st.number_input("ID do Aluno")
             fk_professor_id_assiste = st.number_input("ID do Professor")
             fk_escola_id_assiste = st.number_input("ID da Escola")
@@ -316,14 +316,14 @@ def main():
             if st.button("Inserir"):
                 db_insert_assiste(fk_aluno_id_assiste, fk_professor_id_assiste, fk_escola_id_assiste)
 
-        elif table == "concorre":
+        elif table == "Concorre":
             fk_aluno_id_concorre = st.number_input("ID do Aluno")
             fk_olimpiada_id_concorre = st.number_input("ID da Olimpiada")
 
             if st.button("Inserir"):
                 db_insert_concorre(fk_aluno_id_concorre, fk_olimpiada_id_concorre)
 
-        elif table == "olimpiada_disciplina":
+        elif table == "Olimpiada_Disciplina":
             fk_olimpiada_id_olimpiada_disciplina = st.number_input("ID da Olimpiada")
             fk_disciplina_id_olimpiada_disciplina = st.number_input("ID da Disciplina")
 
