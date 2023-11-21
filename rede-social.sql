@@ -3,7 +3,7 @@ use rede_social;
 
 CREATE TABLE Usuario (
     id INT PRIMARY key auto_increment,
-    email VARCHAR(255),
+    email VARCHAR(255) CHECK (email like '%@%.%'),
     nome VARCHAR(255)
 );
 
@@ -16,7 +16,7 @@ CREATE TABLE Professor (
 
 CREATE TABLE Aluno (
     id INT PRIMARY key,
-    ano_escolar INT,
+    ano_escolar INT check (ano_escolar between 1 and 12),
     fk_escola_id INT,
     FOREIGN KEY (fk_escola_id) REFERENCES Escola(id),
     FOREIGN KEY (id) REFERENCES Usuario(id)

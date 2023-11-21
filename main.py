@@ -214,7 +214,7 @@ def main():
             nome = st.text_input("Nome do Aluno")
             email = st.text_input("Email do Aluno")
             id_escola = st.number_input('Id da Escola', min_value= 1)
-            ano_escolar = st.number_input("Ano Escolar", min_value= 1)
+            ano_escolar = st.number_input("Ano Escolar (1-9 para E.F. e 10-12 para E.M.)", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_aluno(nome, email, ano_escolar, id_escola)
