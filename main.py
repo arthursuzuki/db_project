@@ -163,19 +163,23 @@ def db_insert_olimpiada_disciplina(fk_olimpiada_id, fk_disciplina_id):
 def db_select_prof(table):
     sql = f"SELECT Usuario.id, Usuario.email, Usuario.nome FROM USUARIO INNER JOIN {table} ON Usuario.id = {table}.id"
     cursor.execute(sql)
+
     result = cursor.fetchall()
+    result = pd.read_sql(sql, mydb)
     return result
 
 def db_select_aluno(table):
     sql = f"SELECT Usuario.id, Usuario.email, Usuario.nome, {table}.ano_escolar FROM USUARIO INNER JOIN {table} ON Usuario.id = {table}.id"
     cursor.execute(sql)
     result = cursor.fetchall()
+    result = pd.read_sql(sql, mydb)
     return result
 
 def db_select(table):
     sql = f"select * from {table}"
     cursor.execute(sql)
     result = cursor.fetchall()
+    result = pd.read_sql(sql, mydb)
     return result
 
 
@@ -392,7 +396,7 @@ def main():
                 mydb.commit()
                 st.success("Record Updated Successfully!!!")
 
-        elif table == "Comentários":
+        elif table == "Comentarios":
             id = st.number_input("Id do Comentário", min_value=1)
             conteúdo = st.text_input("conteúdo do Comentário")
             data_comentario = st.date_input("data do Comentário")
