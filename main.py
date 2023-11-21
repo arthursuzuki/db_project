@@ -58,7 +58,7 @@ def db_insert_escola(nome, tipo):
     cursor.execute(sql_usuario)
     cursor.execute("SELECT LAST_INSERT_ID();")
     usuario_id = cursor.fetchone()[0]
-    sql_escola = f"INSERT INTO Escola (nome, tipo, fk_usuario_id) VALUES ('{nome}', '{tipo}', {usuario_id});"
+    sql_escola = f"INSERT INTO Escola (nome, tipo) VALUES ('{nome}', '{tipo}');"
     cursor.execute(sql_escola)
     mydb.commit()
     st.success("Record Created Successfully!!!")
@@ -215,28 +215,14 @@ def main():
             cursor.fetchall()
             result = pd.read_sql(sql, mydb)
             st.table(result)
-#         if option_relatorio == "QTD Alunos por tipo de escola":
-#             st.subheader("Quantidades de alunos por tipo de escola")
-#             sql = f"SELECT
-#   CASE escola.tipo
-#     WHEN 'publica' THEN 'Pública'
-#     WHEN 'privada' THEN 'Privada'
-#     ELSE 'Desconhecido'
-#   END AS tipo,
-#   COUNT(aluno.id) AS qtd_alunos
-# FROM
-#   escola
-# LEFT JOIN
-#   aluno
-# ON
-#   escola.id = aluno.fk_escola_id
-# GROUP BY
-#   escola.tipo
-# "
-#             cursor.execute(sql)
-#             cursor.fetchall()
-#             result = pd.read_sql(sql, mydb)
-#             st.table(result)
+
+        elif option_relatorio == "QTD Alunos por tipo de escola":
+            st.subheader("Quantidades de alunos por tipo de escola")
+            sql = f"SELECT escola.tipo, COUNT(aluno.id) AS qtd_alunos FROM escola LEFT JOIN aluno ON escola.id = aluno.fk_escola_id GROUP BY escola.tipo;"
+            cursor.execute(sql)
+            cursor.fetchall()
+            result = pd.read_sql(sql, mydb)
+            st.table(result)
 
     elif option == "Inserir":
         st.subheader("Inserir um dado a uma tabela")

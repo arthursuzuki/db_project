@@ -35,7 +35,7 @@ CREATE TABLE Grupo (
 CREATE TABLE Escola (
     id INT PRIMARY key auto_increment,
     nome VARCHAR(255),
-    tipo VARCHAR(50)
+    tipo VARCHAR(50) CHECK (tipo IN ('publica', 'privada'))
 );
 
 
