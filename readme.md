@@ -6,13 +6,6 @@ Este README fornece instruções sobre como instalar e executar a aplicação St
 
 Antes de começar, certifique-se de ter o [Python](https://www.python.org/) instalado em sua máquina. Recomendamos o uso do Python 3.7 ou superior.
 
-### Streamlit e MySQL Connector
-
-Instale as dependências necessárias usando o pip:
-
-```bash
-pip install streamlit mysql-connector-python
-```
 
 ## Configuração do Banco de Dados
 
@@ -104,7 +97,15 @@ Certifique-se de ter o MySQL Server instalado e em execução em sua máquina. S
 
      ```bash
      source venv/bin/activate
+     
      ```
+5. **Streamlit e MySQL Connector:**
+
+Instale as dependências necessárias usando o pip:
+
+```bash
+pip install streamlit mysql-connector-python
+```
 
 
 ## Executando a Aplicação
