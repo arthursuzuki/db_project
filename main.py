@@ -9,7 +9,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Rodrigobaby6!", #inserir a senha!
+    password="root", #inserir a senha!
     database="rede_social"
 )
 
@@ -113,6 +113,7 @@ def db_insert_leciona(fk_professor_id, fk_escola_id):
 def db_insert_assiste(cursor, fk_aluno_id_assiste, fk_professor_id_assiste, fk_escola_id_assiste):
     sql = f"INSERT INTO assiste (fk_aluno_id, fk_professor_id, fk_escola_id) VALUES ({fk_aluno_id_assiste}, {fk_professor_id_assiste}, {fk_escola_id_assiste});"
     cursor.execute(sql)
+    mydb.commit()
     st.success("Leciona Record Created Successfully!!!")
         
 
@@ -202,16 +203,15 @@ def main():
                 db_insert_prof(nome, email)
         
         elif table == "Aluno":
-            st.subheader("Inserir um dado a uma tabela")
             nome = st.text_input("Nome do Aluno")
             email = st.text_input("Email do Aluno")
-            ano_escolar = st.number_input("Ano Escolar")
+            ano_escolar = st.number_input("Ano Escolar", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_aluno(nome, email, ano_escolar)
                 
         elif table == "Escola":
-            st.subheader("Inserir um dado a uma tabela")
+
             nome = st.text_input("Nome da Escola")
             tipo = st.text_input("Tipo de Escola")
             
@@ -219,24 +219,22 @@ def main():
                 db_insert_escola(nome, tipo)
 
         elif table == "Participa":
-            fk_usuario_id_participa = st.number_input("ID do Usuário")
-            fk_grupo_id_participa = st.number_input("ID do Grupo")
+            fk_usuario_id_participa = st.number_input("ID do Usuário", min_value= 1)
+            fk_grupo_id_participa = st.number_input("ID do Grupo", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_participa(fk_usuario_id_participa, fk_grupo_id_participa)
 
         elif table == "Disciplina":
-            st.subheader("Inserir um dado a uma tabela")
             nome_disciplina = st.text_input("Nome da Disciplina")
             
             if st.button("Inserir"):
                 db_insert_disciplina(nome_disciplina)
         
         elif table == "Grupo":
-            st.subheader("Inserir um dado a uma tabela")
             nome = st.text_input("Nome:")
             descricao = st.text_area("Descrição:")
-            fk_professor_id = st.number_input("ID do Professor:")
+            fk_professor_id = st.number_input("ID do Professor:", min_value= 1)
             
             if st.button("Inserir"):
                 db_insert_grupo(nome, descricao, fk_professor_id)
@@ -248,7 +246,7 @@ def main():
             cidade = st.text_input("Cidade")
             rua = st.text_input("Rua")
             numero = st.text_input("Número")
-            edicao = st.number_input("Edição")
+            edicao = st.number_input("Edição", min_value= 1)
             
             if st.button("Inserir"):
                 db_insert_olimpiada(nome_olimpiada, estado, cidade, rua, numero, edicao)
@@ -265,54 +263,54 @@ def main():
         elif table == "Comentarios":
             conteudo_comentario = st.text_area("Conteúdo do Comentário")
             data_comentario = st.date_input("Data do Comentário")
-            fk_comentarios_id = st.number_input("ID do Comentário Pai (opcional)")
-            fk_post_id = st.number_input("ID do Post (para vincular ao comentário)")
-            fk_usuario_id_comentario = st.number_input("ID do Usuário (para vincular ao comentário)")
+            fk_comentarios_id = st.number_input("ID do Comentário Pai (opcional)", min_value= 1)
+            fk_post_id = st.number_input("ID do Post (para vincular ao comentário)", min_value= 1)
+            fk_usuario_id_comentario = st.number_input("ID do Usuário (para vincular ao comentário)", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_comentarios(conteudo_comentario, data_comentario, fk_comentarios_id, fk_post_id, fk_usuario_id_comentario)
 
         elif table == "Grupo_Disciplina":
-            fk_grupo_id = st.number_input("ID do Grupo")
-            fk_disciplina_id_grupo = st.number_input("ID da Disciplina")
+            fk_grupo_id = st.number_input("ID do Grupo", min_value= 1)
+            fk_disciplina_id_grupo = st.number_input("ID da Disciplina", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_grupo_disciplina(fk_grupo_id, fk_disciplina_id_grupo)
 
         elif table == "Prof_Disciplina":
-            fk_professor_id_disciplina = st.number_input("ID do Professor")
-            fk_disciplina_id_professor = st.number_input("ID da Disciplina")
+            fk_professor_id_disciplina = st.number_input("ID do Professor", min_value= 1)
+            fk_disciplina_id_professor = st.number_input("ID da Disciplina", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_prof_disciplina(fk_professor_id_disciplina, fk_disciplina_id_professor)
 
         elif table == "Leciona":
-            fk_professor_id_leciona = st.number_input("ID do Professor")
-            fk_escola_id_leciona = st.number_input("ID da Escola")
+            fk_professor_id_leciona = st.number_input("ID do Professor", min_value= 1)
+            fk_escola_id_leciona = st.number_input("ID da Escola", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_leciona(fk_professor_id_leciona, fk_escola_id_leciona)
 
         # Assuming 'cursor' is your MySQL cursor
         elif table == "Assiste":
-            fk_aluno_id_assiste = st.number_input("ID do Aluno")
-            fk_professor_id_assiste = st.number_input("ID do Professor")
-            fk_escola_id_assiste = st.number_input("ID da Escola")
+            fk_aluno_id_assiste = st.number_input("ID do Aluno", min_value= 1)
+            fk_professor_id_assiste = st.number_input("ID do Professor", min_value= 1)
+            fk_escola_id_assiste = st.number_input("ID da Escola", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_assiste(cursor, fk_aluno_id_assiste, fk_professor_id_assiste, fk_escola_id_assiste)
 
 
         elif table == "Concorre":
-            fk_aluno_id_concorre = st.number_input("ID do Aluno")
-            fk_olimpiada_id_concorre = st.number_input("ID da Olimpiada")
+            fk_aluno_id_concorre = st.number_input("ID do Aluno", min_value= 1)
+            fk_olimpiada_id_concorre = st.number_input("ID da Olimpiada", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_concorre(fk_aluno_id_concorre, fk_olimpiada_id_concorre)
 
         elif table == "Olimpiada_Disciplina":
-            fk_olimpiada_id_olimpiada_disciplina = st.number_input("ID da Olimpiada")
-            fk_disciplina_id_olimpiada_disciplina = st.number_input("ID da Disciplina")
+            fk_olimpiada_id_olimpiada_disciplina = st.number_input("ID da Olimpiada", min_value= 1)
+            fk_disciplina_id_olimpiada_disciplina = st.number_input("ID da Disciplina", min_value= 1)
 
             if st.button("Inserir"):
                 db_insert_olimpiada_disciplina(fk_olimpiada_id_olimpiada_disciplina, fk_disciplina_id_olimpiada_disciplina)
