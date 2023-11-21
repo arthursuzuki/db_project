@@ -21,7 +21,7 @@ Certifique-se de ter o MySQL Server instalado e em execução em sua máquina. S
 1. **Clone o Repositório:**
 
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/arthursuzuki/db_project/)
    ```
 
 2. **Navegue até o Diretório do Projeto:**
@@ -77,7 +77,7 @@ Certifique-se de ter o MySQL Server instalado e em execução em sua máquina. S
 1. **Clone este Repositório:**
 
    ```bash
-   git clone https://github.com/seu-usuario/NomeDaSuaApp.git
+   git clone [https://github.com/seu-usuario/NomeDaSuaApp.git](https://github.com/arthursuzuki/db_project/)
    ```
 
 2. **Navegue até o Diretório do Projeto:**
