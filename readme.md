@@ -107,7 +107,7 @@ Instale as dependências necessárias usando o pip:
 pip install streamlit mysql-connector-python
 ```
 
-Na linha 12 do codigo 'main.py' atribua a senha de seu localhost à variável password (substitua a palava ```root```).
+Na linha 12 do codigo 'main.py' atribua a senha de seu localhost à variável password (substitua a palavra ```root```).
 
 ## Executando a Aplicação
 
