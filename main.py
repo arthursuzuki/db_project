@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import mysql.connector
 
+
 #rodar com:  streamlit run "C:<path>\main.py"
 
 #conexão com o banco
@@ -186,8 +187,11 @@ def db_select(table):
 def main():
     
     st.title("CRUD operações bd da rede social")
-    option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', ))
-    table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
+    option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', 'Relatorio' ))
+    if option == "Relatorio":
+        option_relatorio = st.sidebar.selectbox('Selecione uma operação', ('QTD Alunos por Olimpiada', 'QTD Alunos por tipo de escola', 'Relatorio 3' ))
+    else: 
+        table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
 
     if option == "Visualizar":
         st.subheader("Visualizar dados de uma tabela")
@@ -202,6 +206,37 @@ def main():
 
         # Exibindo a tabela no Streamlit
         st.table(result)
+
+    elif option == "Relatorio":
+        if option_relatorio == "QTD Alunos por Olimpiada":
+            st.subheader("Quantidades de alunos concorrendo a cada olimpíada")
+            sql = f"SELECT olimpiada.id, olimpiada.nome, COUNT(concorre.fk_aluno_id) AS qtd_alunos FROM  olimpiada LEFT JOIN concorre ON olimpiada.id = concorre.fk_olimpiada_id GROUP BY olimpiada.id;"
+            cursor.execute(sql)
+            cursor.fetchall()
+            result = pd.read_sql(sql, mydb)
+            st.table(result)
+#         if option_relatorio == "QTD Alunos por tipo de escola":
+#             st.subheader("Quantidades de alunos por tipo de escola")
+#             sql = f"SELECT
+#   CASE escola.tipo
+#     WHEN 'publica' THEN 'Pública'
+#     WHEN 'privada' THEN 'Privada'
+#     ELSE 'Desconhecido'
+#   END AS tipo,
+#   COUNT(aluno.id) AS qtd_alunos
+# FROM
+#   escola
+# LEFT JOIN
+#   aluno
+# ON
+#   escola.id = aluno.fk_escola_id
+# GROUP BY
+#   escola.tipo
+# "
+#             cursor.execute(sql)
+#             cursor.fetchall()
+#             result = pd.read_sql(sql, mydb)
+#             st.table(result)
 
     elif option == "Inserir":
         st.subheader("Inserir um dado a uma tabela")

@@ -17,6 +17,8 @@ CREATE TABLE Professor (
 CREATE TABLE Aluno (
     id INT PRIMARY key,
     ano_escolar INT,
+    fk_escola_id INT,
+    FOREIGN KEY (fk_escola_id) REFERENCES Escola(id),
     FOREIGN KEY (id) REFERENCES Usuario(id)
 );
 
@@ -84,6 +86,13 @@ CREATE TABLE grupo_disciplina (
     FOREIGN KEY (fk_disciplina_id) REFERENCES Disciplina(id)
 );
 
+CREATE TABLE participa (
+    fk_usuario_id INT,    
+	fk_grupo_id INT,
+    PRIMARY KEY (fk_usuario_id, fk_grupo_id),
+    FOREIGN KEY (fk_grupo_id) REFERENCES Grupo(id),
+    FOREIGN KEY (fk_usuario_id) REFERENCES Usuario(id)
+);
 
 CREATE TABLE prof_disciplina (
     fk_professor_id INT,
@@ -144,13 +153,13 @@ VALUES
 INSERT INTO Professor (id)
 SELECT id FROM Usuario LIMIT 4;
 
-INSERT INTO Aluno (id, ano_escolar)
+INSERT INTO Aluno (id, ano_escolar, fk_escola_id)
 Values
-(6, 9),
-(7, 9),
-(8, 9),
-(9, 9),
-(10, 9);
+(6, 9, 1),
+(7, 9, 1),
+(8, 9, 2),
+(9, 9, 3),
+(10, 9, 4);
 
 /*
 truncate table concorre; 
@@ -160,6 +169,7 @@ drop table concorre ;
 drop table assiste;
 */
 
+
 INSERT INTO Grupo (nome, descricao, fk_professor_id)
 VALUES
 ('Grupo de Matemática', 'Grupo para estudos de matemática', 1),
@@ -167,12 +177,20 @@ VALUES
 ('Grupo de História', 'Grupo para estudos de história', 3),
 ('Grupo de Química', 'Grupo para estudos de química', 4);
 
+insert into participa (fk_grupo_id, fk_usuario_id)
+values
+(3, 1),
+(4, 2),
+(5, 3),
+(6, 4),
+(3, 2);
+
 INSERT INTO Escola (nome, tipo)
 VALUES
 ('Escola Estadual Colégio Pedro II', 'Pública'),
 ('Escola Particular Dom Bosco', 'Privada'),
-('Escola Técnica Álvaro de Carvalho', 'Técnica'),
-('Escola de Artes Newton Braga', 'Artística');
+('Escola Técnica Álvaro de Carvalho', 'Pública'),
+('Escola de Artes Newton Braga', 'Privada');
 
 INSERT INTO Disciplina (nome)
 VALUES
