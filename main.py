@@ -98,12 +98,6 @@ def db_insert_participa(fk_usuario_id, fk_grupo_id):
     mydb.commit()
     st.success("Criado com SUCESSO!")
 
-a = """ oi
-nicle 
-como vai
-"""
-print(a)
-
 def db_insert_prof_disciplina(fk_professor_id, fk_disciplina_id):
     sql = f"INSERT INTO prof_disciplina (fk_professor_id, fk_disciplina_id) VALUES ({fk_professor_id}, {fk_disciplina_id});"
     cursor.execute(sql)
@@ -226,8 +220,10 @@ def main():
                     SELECT
                         O.nome AS nome_olimpiada,
                         COUNT(DISTINCT A.id) AS total_alunos_participantes,
-                        COUNT(DISTINCT CASE WHEN GD.fk_disciplina_id IS NOT NULL THEN A.id END) AS alunos_em_grupo_com_disciplina,
-                        ROUND(COUNT(DISTINCT CASE WHEN GD.fk_disciplina_id IS NOT NULL THEN A.id END) * 100.0 / NULLIF(COUNT(DISTINCT A.id), 0), 2) AS porcentagem_participantes_com_disciplina
+                        COUNT(DISTINCT CASE WHEN GD.fk_disciplina_id
+                          IS NOT NULL THEN A.id END) AS alunos_em_grupo_com_disciplina,
+                        ROUND(COUNT(DISTINCT CASE WHEN GD.fk_disciplina_id IS NOT NULL THEN A.id END) * 100.0
+                          / NULLIF(COUNT(DISTINCT A.id), 0), 2) AS porcentagem_participantes_com_disciplina
                     FROM
                         Olimpiada O
                     JOIN
