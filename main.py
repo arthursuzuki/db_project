@@ -98,6 +98,12 @@ def db_insert_participa(fk_usuario_id, fk_grupo_id):
     mydb.commit()
     st.success("Criado com SUCESSO!")
 
+a = """ oi
+nicle 
+como vai
+"""
+print(a)
+
 def db_insert_prof_disciplina(fk_professor_id, fk_disciplina_id):
     sql = f"INSERT INTO prof_disciplina (fk_professor_id, fk_disciplina_id) VALUES ({fk_professor_id}, {fk_disciplina_id});"
     cursor.execute(sql)
@@ -158,7 +164,7 @@ def main():
     st.title("CRUD operações bd da rede social")
     option = st.sidebar.selectbox('Selecione uma operação', ('Visualizar', 'Inserir', 'Alterar', 'Deletar', 'Relatorio' ))
     if option == "Relatorio":
-        option_relatorio = st.sidebar.selectbox('Selecione uma operação', ('QTD Alunos por Olimpiada', 'QTD Alunos por tipo de escola', "QTD Alunos em Cada Grupo" ))
+        option_relatorio = st.sidebar.selectbox('Selecione uma operação', ('QTD Alunos por Olimpiada', 'QTD Alunos por tipo de escola', "QTD Alunos em Cada Grupo" , "Post por usuário e seus comentários", "Relação Concorre - Participa (mesma disciplina)", "Grupos Sem Participantes"))
     else: 
         table = st.sidebar.selectbox('Selecione uma tabela', ('Professor', 'Aluno', 'Grupo', 'Escola', 'Disciplina', 'Olimpiada', 'Post', 'Comentarios', 'Participa', 'Grupo_Disciplina', 'Prof_Disciplina', 'Leciona', 'Assiste', 'Concorre', 'Olimpiada_Disciplina'))
 
@@ -195,6 +201,62 @@ def main():
         elif option_relatorio == "QTD Alunos em Cada Grupo":
             st.subheader("Quantidades de alunos em cada grupo")
             sql = f"SELECT grupo.nome AS nome_grupo, COUNT(participa.fk_usuario_id) AS qtd_alunos FROM grupo LEFT JOIN participa ON grupo.id = participa.fk_grupo_id GROUP BY  grupo.nome ORDER BY qtd_alunos DESC;"
+            cursor.execute(sql)
+            cursor.fetchall()
+            result = pd.read_sql(sql, mydb)
+            st.table(result)
+
+        elif option_relatorio == "Post por usuário e seus comentários":
+            st.subheader("Identificação de post por usuário com sua respectiva quantidade de comentários")
+            sql = f"""
+                    SELECT U.nome AS usuario_nome, P.id AS post_id, COUNT(C.id) AS total_comentarios
+                    FROM Usuario U
+                    JOIN Post P ON U.id = P.fk_usuario_id
+                    LEFT JOIN Comentarios C ON P.id = C.fk_post_id
+                    GROUP BY U.id, U.nome, P.id
+                    """
+            cursor.execute(sql)
+            cursor.fetchall()
+            result = pd.read_sql(sql, mydb)
+            st.table(result)
+
+        elif option_relatorio == "Relação Concorre - Participa (mesma disciplina)":
+            st.subheader("Relação de quantos alunos participam de grupo de mesma disciplia que a olimpiada que estão concorrendo")
+            sql = f"""
+                    SELECT
+                        O.nome AS nome_olimpiada,
+                        COUNT(DISTINCT A.id) AS total_alunos_participantes,
+                        COUNT(DISTINCT CASE WHEN GD.fk_disciplina_id IS NOT NULL THEN A.id END) AS alunos_em_grupo_com_disciplina,
+                        ROUND(COUNT(DISTINCT CASE WHEN GD.fk_disciplina_id IS NOT NULL THEN A.id END) * 100.0 / NULLIF(COUNT(DISTINCT A.id), 0), 2) AS porcentagem_participantes_com_disciplina
+                    FROM
+                        Olimpiada O
+                    JOIN
+                        concorre C ON O.id = C.fk_olimpiada_id
+                    JOIN
+                        Aluno A ON C.fk_aluno_id = A.id
+                    LEFT JOIN
+                        participa P ON A.id = P.fk_usuario_id
+                    LEFT JOIN
+                        grupo_disciplina GD ON P.fk_grupo_id = GD.fk_grupo_id AND O.id = GD.fk_disciplina_id
+                    GROUP BY
+                        O.id, O.nome;
+                    """
+            cursor.execute(sql)
+            cursor.fetchall()
+            result = pd.read_sql(sql, mydb)
+            st.table(result)
+
+        elif option_relatorio == "Grupos Sem Participantes":
+            st.subheader("Grupos Sem Participantes")
+            sql = f"""
+                SELECT Grupo.nome, Grupo.descricao
+                FROM Grupo
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM participa
+                    WHERE participa.fk_grupo_id = Grupo.id
+                    );
+                """
             cursor.execute(sql)
             cursor.fetchall()
             result = pd.read_sql(sql, mydb)
